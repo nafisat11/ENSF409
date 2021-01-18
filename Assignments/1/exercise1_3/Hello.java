@@ -31,16 +31,16 @@ public class Hello {
 
         // Automatic type casting
         System.out.println("Automatic type casting");
-        double myDouble = intType;
-        int myInt = byteType;
+        double myDouble = intType; // Automatic casting int to double
+        int myInt = byteType; // Automatic casting byte to int
 
         System.out.println(myDouble);
         System.out.println(myInt);
 
         // Explicit type casting
         System.out.println("Explicit type casting");
-        short myShort = (short) doubleType;
-        char myChar = (char) longType;
+        short myShort = (short) doubleType; // Explicit casting double to short
+        char myChar = (char) longType; // Explicit casting long to char
 
         System.out.println(myShort);
         System.out.println(myChar);

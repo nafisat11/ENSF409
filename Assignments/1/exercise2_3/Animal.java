@@ -46,22 +46,4 @@ public class Animal {
     public void setColor(String color) {
         this.color = color;
     }
-
-    public static void main(String[] args) {
-        Animal spider = new Animal("black", 8);
-        Animal cat = new Animal("orange");
-
-        spider.setLegs(15);
-        cat.setLegs(20);
-
-        spider.setColor("brown");
-        cat.setColor("grey");
-
-        System.out.println("Number of legs on a spider: " + spider.getLegs());
-        System.out.println("Number of legs on a cat: " + cat.getLegs());
-
-        System.out.println("Colour of spider: " + spider.getColor());
-        System.out.println("Colour of cat: " + cat.getColor());
-    }
-
 } // End of class declaration
