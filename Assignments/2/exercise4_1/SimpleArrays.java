@@ -41,14 +41,6 @@ public class SimpleArrays {
      */
     public String arrayConcat(int arrayIndex) {
         return arrayCrop(arrayIndex, arrayOfStrings.length - 1);
-        // String stringConcat = "";
-        // String delimiter = "";
-
-        // for (int i = arrayIndex; i < arrayOfStrings.length; i++) {
-        // stringConcat += delimiter + arrayOfStrings[i];
-        // delimiter = "#";
-        // }
-        // return stringConcat;
     }
 
     /**
@@ -97,23 +89,4 @@ public class SimpleArrays {
         }
         return stringConcat;
     }
-
-    public static void main(String args[]) {
-        SimpleArrays test = new SimpleArrays("test");
-        SimpleArrays test2 = new SimpleArrays();
-
-        System.out.println(test.arrayConcat(1));
-        System.out.println(test2.arrayConcat(0));
-        System.out.println(test2.arrayConcat(4)); // out of bounds
-        System.out.println(test2.arrayConcat(-1)); // out of bounds
-
-        System.out.println(test.arrayCrop(1, 3)); // 3
-        System.out.println(test.arrayCrop(3, 2)); // 2
-        System.out.println(test.arrayCrop(3, 3)); // Match
-        System.out.println(test.arrayCrop(-1, 2)); // Fail
-        System.out.println(test.arrayCrop(2, 4)); // Fail
-        System.out.println(test.arrayCrop(4, 4)); // Fail
-
-    }
-
 }
