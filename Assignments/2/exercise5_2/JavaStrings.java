@@ -56,11 +56,4 @@ public class JavaStrings {
         String codeWord = ingredient.substring(0, 3).toLowerCase().replaceAll("[aeiou]", "z");
         return codeWord;
     }
-
-    public static void main(String[] args) {
-        JavaStrings test = new JavaStrings();
-        System.out.println(test.addTogether("Hello ", "World"));
-        System.out.println(test.idProcessing("Alice", "Bob", "Bob", 2016));
-        System.out.println(test.secretCode("carrot"));
-    }
 }
