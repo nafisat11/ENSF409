@@ -247,17 +247,8 @@ public class EightQueens implements Cloneable {
 
     public static void main(String[] args) throws CloneNotSupportedException {
         EightQueens board1 = new EightQueens();
-        board1.setQueen(5, 0); // 1
-        EightQueens board2 = (EightQueens) board1.clone();
-        board2.setQueen(6, 6);
-        board1.setQueens(7);
-        // board2.setQueen(7, 2);
-        // board2.emptySquare(0, 1);
-        // System.out.println(board2.setQueens(3));
-        board2.setQueens(6);
-
+        board1.setQueen(5, 0);
+        System.out.println(board1.setQueens(5));
         board1.display();
-        System.out.println();
-        board2.display();
     }
 }
