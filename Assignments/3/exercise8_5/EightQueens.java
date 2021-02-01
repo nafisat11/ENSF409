@@ -98,15 +98,15 @@ public class EightQueens implements Cloneable {
         if (queens == totalQueens) {
             return true;
         } else {
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    if (isSafe(i, j)) {
-                        setQueen(i, j);
+            for (int row = 0; row < 8; row++) {
+                for (int column = 0; column < 8; column++) {
+                    if (isSafe(row, column)) {
+                        setQueen(row, column);
                         queens++;
                         if (setQueensRecursively(queens)) {
                             return true;
                         } else {
-                            emptySquare(i, j);
+                            emptySquare(row, column);
                             queens--;
                         }
                     }
@@ -158,67 +158,65 @@ public class EightQueens implements Cloneable {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (board[row][col] == 'Q') {
-                    char val = board[row][col];
-                    for (int otherCol = col + 1; otherCol < 8; otherCol++) { // checks if duplicates in same row
-                        if (val == board[row][otherCol]) {
+                    char isQueenPlaced = board[row][col];
+
+                    for (int otherCol = col + 1; otherCol < 8; otherCol++) {
+                        if (isQueenPlaced == board[row][otherCol]) {
                             return false;
                         }
                     }
-                    for (int otherRow = row + 1; otherRow < 8; otherRow++) { // checks if duplicates in same col
-                        if (val == board[otherRow][col]) {
+                    for (int otherRow = row + 1; otherRow < 8; otherRow++) {
+                        if (isQueenPlaced == board[otherRow][col]) {
                             return false;
                         }
                     }
-                    for (int i = row - 1, j = col - 1; i >= 0 && j >= 0 && i < 8 && j < 8; i--, j--) {
-                        // checks upper diagonal
-                        if (val == board[i][j]) {
+                    for (int upperRow = row - 1, upperCol = col - 1; upperRow >= 0 && upperCol >= 0 && upperRow < 8
+                            && upperCol < 8; upperRow--, upperCol--) {
+                        if (isQueenPlaced == board[upperRow][upperCol]) {
                             return false;
                         }
                     }
-                    for (int k = row + 1, l = col - 1; k < 8 && l >= 0 && k < 8 && l < 8; k++, l--) {
-                        // checks lower diagonal
-                        if (val == board[k][l]) {
+                    for (int lowerRow = row + 1, lowerCol = col - 1; lowerRow < 8 && lowerCol >= 0 && lowerRow < 8
+                            && lowerCol < 8; lowerRow++, lowerCol--) {
+                        if (isQueenPlaced == board[lowerRow][lowerCol]) {
                             return false;
                         }
                     }
                 }
             }
         }
-        return true; // single queen in row or column;
+        return true;
     }
 
     /**
      * Marks threatened squares on board
      * 
-     * @param x Row index
-     * @param y Column index
+     * @param row    Row index
+     * @param column Column index
      * @return true if it is safe to place a queen such that it will not be attacked
      *         by other queens, false if not
      */
-    public boolean isSafe(int x, int y) { // finds threatened spots
-
-        // return false if two queens share the same column
+    public boolean isSafe(int row, int column) {
         for (int i = 0; i < 8; i++) {
-            if (this.chessBoard[x][i] == 'Q') {
+            if (this.chessBoard[row][i] == 'Q') {
                 return false;
             }
-            if (this.chessBoard[i][y] == 'Q') {
+            if (this.chessBoard[i][column] == 'Q') {
                 return false;
             }
         }
 
-        // return false if two queens share the same `` diagonal
         for (int i = 0; i < 8; i++) {
-            if ((get(x - i, y - i) == 'Q')) {
+            if ((get(row - i, column - i) == 'Q')) {
                 return false;
             }
-            if ((get(x - i, y + i) == 'Q')) {
+            if ((get(row - i, column + i) == 'Q')) {
                 return false;
             }
-            if ((get(x + i, y - i) == 'Q')) {
+            if ((get(row + i, column - i) == 'Q')) {
                 return false;
             }
-            if ((get(x + i, y + i) == 'Q')) {
+            if ((get(row + i, column + i) == 'Q')) {
                 return false;
             }
         }
@@ -256,12 +254,10 @@ public class EightQueens implements Cloneable {
         // board2.setQueen(7, 2);
         // board2.emptySquare(0, 1);
         // System.out.println(board2.setQueens(3));
-        // board2.setQueens(3);
+        board2.setQueens(6);
 
         board1.display();
         System.out.println();
         board2.display();
-
     }
-
 }
