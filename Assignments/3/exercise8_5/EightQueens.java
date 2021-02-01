@@ -2,6 +2,9 @@
 /**
  * EightQueens is a program that can place any number of queens, up to a maximum
  * of 8, on a chessboard such that no queen can attack any other queens.
+ * 
+ * @author Nafisa Tabassum <a href="mailto:nafisa.tabassum@ucalgary.ca">nafisa.tabassum@ucalgary.ca</a>
+ * @version 1.0
  */
 
 import java.util.Arrays;
@@ -10,14 +13,19 @@ public class EightQueens implements Cloneable {
     public char[][] chessBoard = new char[8][8];
     private int numPlacedQueens;
     private int totalQueens;
-    private int[] location = new int[8];
 
+    /**
+     * Represents an entire 8x8 empty chessboard denoted by 'o' for each square
+     */
     public EightQueens() {
         for (char[] row : this.chessBoard) {
             Arrays.fill(row, 'o');
         }
     }
 
+    /**
+     * Creates a deep copy of the chessboard
+     */
     public Object clone() throws CloneNotSupportedException {
         EightQueens copy = (EightQueens) super.clone();
 
@@ -29,27 +37,63 @@ public class EightQueens implements Cloneable {
         return copy;
     }
 
+    /**
+     * Gets current state of the chessboard
+     * 
+     * @return Current state of chessboard
+     */
     public char[][] getBoard() {
         return this.chessBoard;
     }
 
-    public char get(int x, int y) {
-        if (x < 0 || y < 0 || x > 7 || y > 7) {
+    /**
+     * Ensures the location of the square to be marked as threatened by a potential
+     * queen placement is valid when checking diagonal squares
+     * 
+     * @param row    Row index
+     * @param column Column index
+     * @return A valid diagonal square location or an arbitrary char if the indices
+     *         are out of bounds
+     */
+    public char get(int row, int column) {
+        if (row < 0 || column < 0 || row > 7 || column > 7) {
             return 'o';
         }
-        return this.chessBoard[x][y];
+        return this.chessBoard[row][column];
     }
 
+    /**
+     * Marks a square as a queen denoted by 'Q', updates number of existing queens
+     * on board
+     * 
+     * @param row    Row index
+     * @param column Column index
+     */
     public void setQueen(int row, int column) {
         this.chessBoard[row][column] = 'Q';
         numPlacedQueens++;
     }
 
+    /**
+     * Marks a square as an empty space denoted by 'o', updates number of existing
+     * queens on board
+     * 
+     * @param row    Row index
+     * @param column Column index
+     */
     public void emptySquare(int row, int column) {
         this.chessBoard[row][column] = 'o';
         numPlacedQueens--;
     }
 
+    /**
+     * Recursively attempts to place a specified number of queens in allowed
+     * positions on the board
+     * 
+     * @param queens Number of queens to place on board
+     * @return true if successful placement of all specified number of queens and
+     *         false if unsuccessful
+     */
     public boolean setQueensRecursively(int queens) {
         if (queens == totalQueens) {
             return true;
@@ -72,6 +116,16 @@ public class EightQueens implements Cloneable {
         return false;
     }
 
+    /**
+     * Wrapper for {@link #setQueensRecursively(int)} setQueensRecursively} method
+     * that pre-checks board for illegal user-placed queens and exceeding the
+     * maximum number of queens placed on board
+     * 
+     * @param queensRemaining Number of queens to place on board
+     * @return true if successful solution and false if there are errors with the
+     *         board or it is unable to place all specified number of queens in a
+     *         valid arrangement
+     */
     public boolean setQueens(int queensRemaining) {
         if (queensRemaining < 1 || queensRemaining > 8) {
             throw new IllegalArgumentException("Number of queens must be betwen 1 and 8 inclusive");
@@ -93,6 +147,12 @@ public class EightQueens implements Cloneable {
         return false;
     }
 
+    /**
+     * Checks if user placement of queens are valid i.e. no more than one queen in
+     * each row, column, upper diagonal or lower diagonal
+     * 
+     * @return true if placed queens are in a valid arrangement and false if not
+     */
     public boolean validBoard() {
         char[][] board = getBoard();
         for (int row = 0; row < 8; row++) {
@@ -110,16 +170,12 @@ public class EightQueens implements Cloneable {
                         }
                     }
                     for (int i = row - 1, j = col - 1; i >= 0 && j >= 0 && i < 8 && j < 8; i--, j--) {
-                        // System.out.println(board[i][j]);
-                        // System.out.print(val);
                         // checks upper diagonal
                         if (val == board[i][j]) {
                             return false;
                         }
                     }
                     for (int k = row + 1, l = col - 1; k < 8 && l >= 0 && k < 8 && l < 8; k++, l--) {
-                        // System.out.println(board[k][l]);
-                        // System.out.print(val);
                         // checks lower diagonal
                         if (val == board[k][l]) {
                             return false;
@@ -131,6 +187,14 @@ public class EightQueens implements Cloneable {
         return true; // single queen in row or column;
     }
 
+    /**
+     * Marks threatened squares on board
+     * 
+     * @param x Row index
+     * @param y Column index
+     * @return true if it is safe to place a queen such that it will not be attacked
+     *         by other queens, false if not
+     */
     public boolean isSafe(int x, int y) { // finds threatened spots
 
         // return false if two queens share the same column
@@ -161,37 +225,18 @@ public class EightQueens implements Cloneable {
         return true;
     }
 
+    /**
+     * Gets the number of queens already placed on board by user
+     * 
+     * @return Number of queens placed on board
+     */
     public int getNumPlacedQueens() {
-        // char[][] board = getBoard();
-        // numPlacedQueens = 0;
-        // for (int row = 0; row < board.length; row++) {
-        // for (int column = 0; column < board[row].length; column++) {
-        // if (this.chessBoard[row][column] == 'Q') {
-        // numPlacedQueens++;
-        // }
-        // }
-        // }
         return numPlacedQueens;
     }
 
-    public boolean getQueenLocations() {
-        char[][] board = getBoard();
-        numPlacedQueens = 0;
-        for (int row = 0; row < board.length; row++) {
-            for (int column = 0; column < board[row].length; column++) {
-                if (this.chessBoard[row][column] == 'Q') {
-                    System.out.println(isSafe(row, column));
-                    if (isSafe(row, column)) {
-                        return true;
-                        // location[row] = column;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
+    /**
+     * Prints out the chessboard in matrix form
+     */
     public void display() {
         char[][] board = getBoard();
         for (int row = 0; row < board.length; row++) {
