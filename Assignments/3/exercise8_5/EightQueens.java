@@ -55,7 +55,7 @@ public class EightQueens implements Cloneable {
      * @return A valid diagonal square location or an arbitrary char if the indices
      *         are out of bounds
      */
-    public char get(int row, int column) {
+    public char getValidDiagonalSpace(int row, int column) {
         if (row < 0 || column < 0 || row > 7 || column > 7) {
             return 'o';
         }
@@ -207,16 +207,16 @@ public class EightQueens implements Cloneable {
         }
 
         for (int i = 0; i < 8; i++) {
-            if ((get(row - i, column - i) == 'Q')) {
+            if ((getValidDiagonalSpace(row - i, column - i) == 'Q')) {
                 return false;
             }
-            if ((get(row - i, column + i) == 'Q')) {
+            if ((getValidDiagonalSpace(row - i, column + i) == 'Q')) {
                 return false;
             }
-            if ((get(row + i, column - i) == 'Q')) {
+            if ((getValidDiagonalSpace(row + i, column - i) == 'Q')) {
                 return false;
             }
-            if ((get(row + i, column + i) == 'Q')) {
+            if ((getValidDiagonalSpace(row + i, column + i) == 'Q')) {
                 return false;
             }
         }
