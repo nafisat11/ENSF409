@@ -297,7 +297,7 @@ class DateTime implements FormattedOutput {
 
     // Returns string in the format:
     // Day: , Month: , Year: , Hour: , Minute: , Second:
-    public String getFormatted() { // returns String in the form of Day: , Month: etc
+    public String getFormatted() {
         return "Day: " + this.DAY + ", Month: " + monthToString() + ", Year: " + this.YEAR + ", Hour: " + this.HOUR
                 + ", Minute: " + this.MINUTE + ", Second: " + this.SECOND;
     }
