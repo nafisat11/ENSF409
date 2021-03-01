@@ -1,6 +1,8 @@
 
 /**
- * Log parser
+ * Parses log entries for ip address, date, time, device, location, and action taken
+ * @author Nafisa Tabassum <a href="mailto:nafisa.tabassum@ucalgary.ca">nafisa.tabassum@ucalgary.ca</a>
+ * @version 1.0
  */
 
 import java.util.regex.Matcher;
@@ -11,10 +13,17 @@ interface FormattedOutput {
     String getFormatted();
 }
 
+/**
+ * Actions that can be taken
+ */
 enum Actions {
     END, ENABLE, START, TEST, DISABLE;
 }
 
+/**
+ * Months in year, includes functions for ordinal, named month, and month
+ * abbreviation
+ */
 enum Months {
     JAN {
         public String toString() {
@@ -174,236 +183,282 @@ enum Months {
         }
     };
 
+    // Returns full name of month
     public abstract String toString();
 
+    // Returns month ordinal
     public abstract int toInt();
 
+    // Returns month abbreviation
     public abstract String toLog();
 }
 
+/**
+ * Extracts and processes ipv4 addresses from log entry
+ */
 class IPv4 implements FormattedOutput {
-    private final String ip;
-    private static final String regex = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
-    private static final Pattern pattern = Pattern.compile(regex);
+    private final String IP;
+    private static final String REGEX = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+    private static final Pattern PATTERN = Pattern.compile(REGEX);
 
-    public IPv4(String ip) { // gets the log line
-        this.ip = ip;
+    // Stores full log line
+    public IPv4(String ip) {
+        this.IP = ip;
     }
 
-    public String getFormatted() { // IPv4: xx.xxx
+    // Returns a string in the format:
+    // IPv4: xxx.xxx.xxx.xxx
+    public String getFormatted() {
         return "IPv4: " + getIP();
     }
 
-    public String getIP() { // returns only ip addr
-        Matcher matcher = pattern.matcher(this.ip);
+    // Returns ipv4 address
+    public String getIP() {
+        Matcher matcher = PATTERN.matcher(this.IP);
         if (matcher.find()) {
             return matcher.group();
         }
         return null;
     }
 
-    public String getRegex() {
-        return regex;
+    // Returns regex used to extract ipv4 address
+    public static String getRegex() {
+        return REGEX;
     }
 
 }
 
+/**
+ * Extracts and processes device name from log entry
+ */
 class Device implements FormattedOutput {
-    private final String device;
-    private static final String regex = "(?<=\\s)[a-zA-Z\\s]+";
-    private static final Pattern pattern = Pattern.compile(regex);
+    private final String DEVICE;
+    private static final String REGEX = "(?<=\\s)[a-zA-Z\\s]+";
+    private static final Pattern PATTERN = Pattern.compile(REGEX);
 
     public Device(String device) {
-        this.device = device;
+        this.DEVICE = device;
     }
 
-    public String getFormatted() { // returns Device: ...
+    // Returns a string in the format:
+    // Device: sprinkler
+    public String getFormatted() {
         return "Device: " + getDevice();
     }
 
-    public String getDevice() { // returns device name
-        Matcher matcher = pattern.matcher(this.device);
+    // Returns name of device
+    public String getDevice() {
+        Matcher matcher = PATTERN.matcher(this.DEVICE);
         if (matcher.find()) {
             return matcher.group().strip();
         }
         return null;
     }
 
-    public static String getRegex() { // gets the regex string
-        return regex;
+    // Returns regex used to extract device name
+    public static String getRegex() {
+        return REGEX;
     }
 
 }
 
+/**
+ * Extracts and processes date and time from log entry
+ */
 class DateTime implements FormattedOutput {
-    private final int day;
-    private final int month;
-    private final int year;
-    private final int hour;
-    private final int minute;
-    private final int second;
-    private static final String regex = "\\[([0-9]{1,2})/([a-zA-Z]{3})/([0-9]{4}):([0-9]{1,2}):([0-9]{2}):([0-9]{2})\\]";
-    private static final Pattern pattern = Pattern.compile(regex);
+    private final int DAY;
+    private final int MONTH;
+    private final int YEAR;
+    private final int HOUR;
+    private final int MINUTE;
+    private final int SECOND;
+    private static final String REGEX = "\\[([0-9]{1,2})/([a-zA-Z]{3})/([0-9]{4}):([0-9]{1,2}):([0-9]{2}):([0-9]{2})\\]";
+    private static final Pattern PATTERN = Pattern.compile(REGEX);
 
     public DateTime(String datetime) {
-        Matcher matcher = pattern.matcher(datetime);
+        Matcher matcher = PATTERN.matcher(datetime);
         if (matcher.find()) {
-            this.day = Integer.parseInt(matcher.group(1));
-            this.month = abbrevToInt(matcher.group(2));
-            this.year = Integer.parseInt(matcher.group(3));
-            this.hour = Integer.parseInt(matcher.group(4));
-            this.minute = Integer.parseInt(matcher.group(5));
-            this.second = Integer.parseInt(matcher.group(6));
+            Months enumMonth = Months.valueOf(matcher.group(2).toUpperCase());
+            this.DAY = Integer.parseInt(matcher.group(1));
+            this.MONTH = enumMonth.toInt();
+            this.YEAR = Integer.parseInt(matcher.group(3));
+            this.HOUR = Integer.parseInt(matcher.group(4));
+            this.MINUTE = Integer.parseInt(matcher.group(5));
+            this.SECOND = Integer.parseInt(matcher.group(6));
         } else {
-            this.day = 0;
-            this.month = 0;
-            this.year = 0;
-            this.hour = 0;
-            this.minute = 0;
-            this.second = 0;
+            this.DAY = 0;
+            this.MONTH = 0;
+            this.YEAR = 0;
+            this.HOUR = 0;
+            this.MINUTE = 0;
+            this.SECOND = 0;
         }
     }
 
-    private int abbrevToInt(String month) {
-        for (Months m : Months.values()) {
-            if (m.toLog().equals(month)) {
-                return m.toInt();
-            }
-        }
-        return 1;
-    }
-
+    // Returns string in the format:
+    // Day: , Month: , Year: , Hour: , Minute: , Second:
     public String getFormatted() { // returns String in the form of Day: , Month: etc
-        return "Day: " + this.day + ", Month: " + monthToString() + ", Year: " + this.year + ", Hour: " + this.hour
-                + ", Minute: " + this.minute + ", Second: " + this.second;
+        return "Day: " + this.DAY + ", Month: " + monthToString() + ", Year: " + this.YEAR + ", Hour: " + this.HOUR
+                + ", Minute: " + this.MINUTE + ", Second: " + this.SECOND;
     }
 
-    public String monthToString() { // if given 3, return March
-        for (Months m : Months.values()) {
-            if (m.toInt() == this.month) {
-                return m.toString();
+    // Converts ordinal to named month
+    public String monthToString() {
+        for (Months enumMonth : Months.values()) {
+            if (enumMonth.toInt() == this.MONTH) {
+                return enumMonth.toString();
             }
         }
         return null;
     }
 
+    // Returns day
     public int getDay() {
-        return this.day;
+        return this.DAY;
     }
 
+    // Returns month ordinal
     public int getMonth() {
-        return this.month;
+        return this.MONTH;
     }
 
+    // Returns year
     public int getYear() {
-        return this.year;
+        return this.YEAR;
     }
 
+    // Returns hour
     public int getHour() {
-        return this.hour;
+        return this.HOUR;
     }
 
+    // Returns minute
     public int getMinute() {
-        return this.minute;
+        return this.MINUTE;
     }
 
+    // Returns second
     public int getSecond() {
-        return this.second;
+        return this.SECOND;
     }
 
-    public String getRegex() {
-        return regex;
+    // Returns regex used to extract date and time
+    public static String getRegex() {
+        return REGEX;
     }
 
 }
 
+/**
+ * Extracts action from log entry
+ */
 class Action implements FormattedOutput {
-    private final String action;
-    private static final String regex = "(?<=\")([A-Z]+)\\s";
-    private static final Pattern pattern = Pattern.compile(regex);
+    private final String ACTION;
+    private static final String REGEX = "(?<=\")([A-Z]+)\\s";
+    private static final Pattern PATTERN = Pattern.compile(REGEX);
 
     public Action(String action) {
-        this.action = action;
+        this.ACTION = action;
     }
 
-    public String getFormatted() { // returns Action: ...
-        for (Actions a : Actions.values()) {
-            if (a.name().equals(getAction())) {
+    // Returns string in the format:
+    // Action: ENABLE
+    public String getFormatted() {
+        for (Actions enumAction : Actions.values()) {
+            if (enumAction.name().equals(getAction())) {
                 return "Action: " + getAction();
             }
         }
         return null;
     }
 
-    public String getAction() { // returns action
-        Matcher matcher = pattern.matcher(this.action);
+    // Returns extracted action
+    public String getAction() {
+        Matcher matcher = PATTERN.matcher(this.ACTION);
         if (matcher.find()) {
             return matcher.group().strip();
         }
         return null;
     }
 
-    public String getRegex() {
-        return regex;
+    // Returns regex used to extract action
+    public static String getRegex() {
+        return REGEX;
     }
 }
 
+/**
+ * Extracts location (room and building) from log entry
+ */
 class Location implements FormattedOutput {
-    private final String room;
-    private final String building;
-    private final String regex = "\\((.*?)\\)";
-    private final Pattern pattern = Pattern.compile(regex);
+    private final String ROOM;
+    private final String BUILDING;
+    private static final String REGEX = "\\((.*?)\\)";
+    private static final Pattern PATTERN = Pattern.compile(REGEX);
 
-    public Location(String location) { // log line get room and building
-        Matcher matcher = pattern.matcher(location);
+    public Location(String location) {
+        Matcher matcher = PATTERN.matcher(location);
         if (matcher.find()) {
             String[] roomAndBuilding = matcher.group(1).strip().split(" - ");
-            this.room = roomAndBuilding[0];
-            this.building = roomAndBuilding[1];
+            this.ROOM = roomAndBuilding[0];
+            this.BUILDING = roomAndBuilding[1];
         } else {
-            this.room = null;
-            this.building = null;
+            this.ROOM = null;
+            this.BUILDING = null;
         }
     }
 
-    public String getFormatted() { // returns String in the form of Room: Secured room, Building: Airport location
-        return "Room: " + this.room + ", Building: " + this.building;
+    // Returns string in the format:
+    // Room: Secured room, Building: Airport location
+    public String getFormatted() {
+        return "Room: " + this.ROOM + ", Building: " + this.BUILDING;
     }
 
+    // Returns room
     public String getRoom() {
-        return this.room;
+        return this.ROOM;
     }
 
+    // Returns building
     public String getBuilding() {
-        return this.building;
+        return this.BUILDING;
     }
 
-    public String getRegex() {
-        return regex;
+    // Returns regex used to extract location
+    public static String getRegex() {
+        return REGEX;
     }
 
 }
 
+/**
+ * Representation of entire log
+ */
 class ParseLogfile {
     private ArrayList<ParseLine> log;
 
     public ParseLogfile(String[] array) {
-        log = new ArrayList<ParseLine>();
+        this.log = new ArrayList<ParseLine>();
         for (String line : array) {
             this.log.add(new ParseLine(line));
         }
     }
 
+    // Returns a specific entry in log file
     public ParseLine getLine(int index) {
         return this.log.get(index);
     }
 
+    // Returns entire log
     public ArrayList<ParseLine> getLog() {
         return this.log;
     }
 
 }
 
+/**
+ * Represents an entry in the log
+ */
 class ParseLine {
     private final String logLine;
     private final Location location;
@@ -421,26 +476,32 @@ class ParseLine {
         this.ipv4 = new IPv4(logLine);
     }
 
+    // Returns formatted ipv4 string
     public IPv4 getIPv4() {
         return this.ipv4;
     }
 
+    // Returns log entry
     public String getLogLine() {
         return this.logLine;
     }
 
+    // Returns formatted location string
     public Location getLocation() {
         return this.location;
     }
 
+    // Returns formatted device string
     public Device getDevice() {
         return this.device;
     }
 
+    // Returns formatted action string
     public Action getAction() {
         return this.action;
     }
 
+    // Returns formatted date and time string
     public DateTime getDateTime() {
         return this.dateTime;
     }
