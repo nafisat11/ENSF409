@@ -8,19 +8,25 @@ public class StringProcessor {
 
     private final String storedString;
 
+    // Constructor that stores a single string
     public StringProcessor(String input) {
         this.storedString = new String(input);
     }
 
+    // Adds together stored and inputted string stripped of leading and trailing
+    // whitespaces
+    // Returns mirror of combined string
     public String addTogetherMirror(String inputString) {
         String combined = storedString.strip() + inputString.strip();
         String mirror = new StringBuffer(combined).reverse().toString();
         return mirror.toLowerCase();
     }
 
+    // Creates unique string identifier that consists of first and last initial,
+    // first initial of pet's name and pet's year of birth
     public static String idProcessing(String firstName, String lastName, String petName, int year) {
         String[] names = { firstName.strip(), lastName.strip(), petName.strip() };
-        Pattern namePattern = Pattern.compile("^[A-Z](('|-|.|\\s)?[a-zA-Z]*[a-z])*$");
+        Pattern namePattern = Pattern.compile("^[A-Z](('|-|.|\\s|.\\s)?[a-zA-Z]*[a-z])*$");
 
         if (String.valueOf(year).length() != 4) {
             throw new IllegalArgumentException("Invalid pet birth year format");
@@ -46,6 +52,8 @@ public class StringProcessor {
         return petID;
     }
 
+    // Returns a string where each character in the stored string is shifted by a
+    // user-input offset
     public String secretCode(int offset) {
         StringBuilder encodedString = new StringBuilder(storedString);
 
@@ -66,6 +74,7 @@ public class StringProcessor {
         return String.valueOf(encodedString);
     }
 
+    // Getter for stored string
     public String getStoredString() {
         return this.storedString;
     }
